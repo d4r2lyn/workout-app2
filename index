@@ -1,0 +1,790 @@
+import { useState } from "react";
+
+// 🌿 EARTHY PALETTE — Light Theme
+const C = {
+  bg: "#FDFBF7",
+  cardBg: "#FFFFFF",
+  cardBorder: "#E0D9CC",
+  sage: "#6B8F5E",
+  sageDark: "#4A6E3D",
+  sageLight: "#A3C993",
+  sageBg: "#E8F0E2",
+  olive: "#7A8C5E",
+  terracotta: "#C06B45",
+  terracottaBg: "#FBEEE8",
+  clay: "#B5694D",
+  sand: "#C4A86E",
+  sandBg: "#FAF3E3",
+  cream: "#F5F0E6",
+  pastelYellow: "#F5E6A3",
+  pastelYellowBg: "#FDF8E8",
+  pastelPeach: "#F5C7A8",
+  pastelPeachBg: "#FFF0E5",
+  pastelLavender: "#B8A8D0",
+  pastelLavenderBg: "#F0ECF5",
+  pastelMint: "#88C5A8",
+  pastelMintBg: "#E5F5ED",
+  textDark: "#3A3630",
+  textMuted: "#7A7568",
+  textDim: "#A09A8E",
+};
+
+const DAYS = [
+  {
+    id: 1, emoji: "🍑",
+    title: "Day 1 — Lower Body & Glutes",
+    tag: "🦵 Glutes · Quads · Hamstrings",
+    color: C.sage, headerBg: C.sageBg, tagBg: "#6B8F5E18", borderAccent: C.sage,
+    warmup: [
+      ["🚶‍♀️ Brisk treadmill walk", "5 min @ 3.0–3.5 mph"],
+      ["🦩 Leg swings (front-to-back)", "10 each leg"],
+      ["🦩 Leg swings (side-to-side)", "10 each leg"],
+      ["🔄 Hip circles", "10 each direction"],
+      ["🧎 Kneeling hip flexor stretch", "20 sec each side"],
+      ["🦋 Butterfly stretch (seated)", "30 sec — open hips gently"],
+      ["🏋️ Bodyweight squats (slow)", "10 reps — feel the range of motion"],
+      ["🌉 Bodyweight glute bridges", "10 reps (activate glutes)"],
+      ["🐱 Cat-cow stretch", "8 reps — loosen up your spine"],
+      ["🦶 Ankle circles", "10 each direction, each foot"],
+    ],
+    exercises: [
+      ["🌉 Glute Bridges (band above knees)", "3 x 15", "Drive hips up, squeeze glutes at top, pause 1 sec"],
+      ["🏋️ Bodyweight Squat", "3 x 12–15", "Feet shoulder-width, chest up, sit back into heels"],
+      ["🔻 Romanian Deadlift (dumbbell)", "3 x 10–12", "Hinge at hips, slight knee bend, feel hamstring stretch"],
+      ["🦀 Lateral Band Walk", "3 x 15 each side", "Band around ankles, keep tension, don't let knees cave"],
+      ["🐴 Donkey Kick (resistance band)", "3 x 15 each leg", "Band around foot, kick heel toward ceiling, squeeze glute"],
+      ["🍑 Hip Thrust (dumbbell)", "3 x 12–15", "Back on couch/bench, dumbbell on hips, thrust up powerfully"],
+      ["🦵 Standing Kickback (band)", "3 x 15 each leg", "Lean slightly forward, kick straight back, controlled motion"],
+      ["🧘 Sumo Squat Hold (dumbbell)", "3 x 12 + 30s hold", "Wide stance, toes out, hold dumbbell at chest"],
+    ],
+    cooldown: [
+      ["🦵 Standing quad stretch", "30 sec each leg"],
+      ["🧘 Seated hamstring stretch", "30 sec each leg"],
+      ["🐦 Pigeon pose", "30 sec each side"],
+      ["🛌 Lying figure-4 glute stretch", "30 sec each side"],
+      ["🧎 Kneeling hip flexor stretch", "30 sec each side"],
+      ["🦋 Butterfly stretch (seated)", "30 sec — let knees drop"],
+      ["🐱 Cat-cow stretch", "8 slow reps"],
+      ["🧒 Child's pose", "45 sec — relax and breathe deeply"],
+      ["🌀 Supine spinal twist", "30 sec each side"],
+      ["😮‍💨 Deep breathing (lying down)", "1 min — inhale 4 sec, hold 4, exhale 6"],
+    ],
+  },
+  {
+    id: 2, emoji: "💪",
+    title: "Day 2 — Upper Body & Core",
+    tag: "🎯 Chest · Back · Arms · Core",
+    color: C.sand, headerBg: C.sandBg, tagBg: "#C4A86E18", borderAccent: C.sand,
+    warmup: [
+      ["🚶‍♀️ Easy treadmill walk", "5 min"],
+      ["🔄 Arm circles (forward)", "10 reps"],
+      ["🔄 Arm circles (backward)", "10 reps"],
+      ["🤷 Shoulder rolls", "10 forward, 10 backward"],
+      ["🐱 Cat-cow stretches", "10 reps on hands and knees"],
+      ["🤸 Cross-body arm stretch", "20 sec each arm"],
+      ["🙆 Overhead tricep stretch", "20 sec each arm"],
+      ["🧘 Child's pose with reach", "30 sec — reach arms out wide"],
+      ["🌀 Wrist circles", "10 each direction"],
+      ["💫 Thoracic spine rotations", "8 each side — on all fours"],
+    ],
+    exercises: [
+      ["💪 Push-Up (modified or full)", "3 x 8–12", "Start on knees if needed; progress to full over time"],
+      ["🚣 Dumbbell Bent-Over Row", "3 x 10–12 each arm", "Hinge forward, elbow drives back, squeeze shoulder blade"],
+      ["🙆 Dumbbell Shoulder Press", "3 x 10–12", "Palms forward, press overhead, don't arch lower back"],
+      ["🪢 Resistance Rope Rows", "3 x 12–15", "Anchor rope at chest height, pull elbows back"],
+      ["↔️ Resistance Band Pull-Apart", "3 x 15", "Hold at chest level, pull apart until arms are wide"],
+      ["💪 Dumbbell Bicep Curl", "3 x 12", "Slow and controlled, full range of motion, no swinging"],
+      ["🔺 Tricep Overhead Extension", "3 x 12", "Hold one dumbbell overhead with both hands, lower behind head"],
+    ],
+    extraSection: {
+      label: "🔥 Core Circuit — minimal rest between exercises, 60s rest between rounds",
+      exercises: [
+        ["🧱 Plank", "3 x 20–45 sec", "Elbows under shoulders, body straight, squeeze core + glutes"],
+        ["🪲 Dead Bug", "3 x 10 each side", "Slow and controlled, lower back pressed to floor"],
+        ["🚴 Bicycle Crunches", "3 x 15 each side", "Controlled rotation, don't pull on your neck"],
+        ["🦵 Leg Raises", "3 x 12–15", "Lower back stays on floor, lower legs slowly"],
+        ["🌀 Russian Twists (dumbbell)", "3 x 12 each side", "Feet on floor to start, tap dumbbell side to side"],
+      ],
+    },
+    cooldown: [
+      ["🧒 Child's pose", "30 sec"],
+      ["🪡 Thread-the-needle stretch", "30 sec each side"],
+      ["🌀 Seated spinal twist", "30 sec each side"],
+      ["🤗 Standing chest stretch (arms behind back)", "30 sec"],
+      ["🤸 Cross-body shoulder stretch", "20 sec each arm"],
+      ["🙆 Overhead tricep stretch", "20 sec each arm"],
+      ["🐱 Cat-cow stretch", "8 slow reps"],
+      ["🧘 Forward fold (standing)", "30 sec — let head hang heavy"],
+      ["🌀 Neck rolls", "5 slow circles each direction"],
+      ["😮‍💨 Deep breathing (seated)", "1 min — inhale 4 sec, hold 4, exhale 6"],
+    ],
+  },
+  {
+    id: 3, emoji: "🔥",
+    title: "Day 3 — Full Body + Cardio",
+    tag: "⚡ Total Body · Endurance · Cardio",
+    color: C.terracotta, headerBg: C.terracottaBg, tagBg: "#C06B4518", borderAccent: C.terracotta,
+    warmup: [
+      ["🧎 Kneeling hip flexor stretch", "20 sec each side"],
+      ["🦩 Standing quad stretch", "20 sec each leg"],
+      ["🔄 Hip circles", "10 each direction"],
+      ["🌀 Trunk rotations", "10 each side — hands on hips"],
+      ["💫 Arm swings across chest", "15 reps"],
+      ["🏋️ Bodyweight squats (slow)", "10 reps"],
+      ["🚶 Minutes 0–3: Easy walk", "3.0 mph"],
+      ["🚶‍♀️ Minutes 3–5: Brisk walk", "3.5–4.0 mph"],
+      ["🏃‍♀️ Minutes 5–6: Light jog", "4.5–5.0 mph"],
+      ["😮‍💨 Minutes 6–7: Recovery walk", "3.5 mph"],
+      ["🔁 Repeat jog/walk intervals 4–5x", ""],
+      ["🧘 Final 3 min: Cool-down walk", "3.0 mph"],
+    ],
+    warmupLabel: "🏃‍♀️ Stretches + Treadmill Intervals (25–30 min)",
+    exercises: [
+      ["⭐ Jumping Jacks", "3 x 30", "Full-body warm-up and cardio burst"],
+      ["🏋️ Goblet Squat (dumbbell)", "3 x 12", "Hold dumbbell at chest, squat deep, elbows inside knees"],
+      ["🔄 Push-Up to Side Plank", "3 x 8 each side", "Push-up then rotate into side plank; builds core + chest"],
+      ["🌅 Resistance Band Good Morning", "3 x 15", "Band under feet, over shoulders; hinge forward at hips"],
+      ["🪑 Chair Dip (triceps)", "3 x 10–12", "Hands on chair edge behind you, lower and press back up"],
+      ["🦵 Reverse Lunge (dumbbell)", "3 x 10 each leg", "Step back (gentler on knees), knee hovers above floor"],
+      ["🔻 Dumbbell Deadlift", "3 x 10–12", "Hip hinge, flat back, drive hips forward, squeeze glutes"],
+      ["⛰️ Mountain Climbers", "3 x 20 total", "Hips level, core tight, drive knees toward chest"],
+    ],
+    cooldown: [
+      ["🧘 Hip flexor stretch (kneeling)", "30 sec each side"],
+      ["🦩 Standing figure-4 glute stretch", "30 sec each side"],
+      ["🌀 Supine spinal twist", "30 sec each side"],
+      ["🧒 Child's pose", "45 sec"],
+      ["🦵 Standing quad stretch", "30 sec each leg"],
+      ["🧘 Seated hamstring stretch", "30 sec each leg"],
+      ["🤗 Standing chest opener (arms behind back)", "30 sec"],
+      ["🧘 Forward fold (standing)", "30 sec — relax your neck"],
+      ["🐱 Cat-cow stretch", "8 slow reps"],
+      ["😮‍💨 Deep breathing (lying down)", "1 min — inhale 4 sec, hold 4, exhale 6"],
+    ],
+  },
+  {
+    id: 4, emoji: "🌟",
+    title: "Day 4 (Optional) — Glutes & Calisthenics",
+    tag: "✨ Glute Focus · Functional · Power",
+    color: C.pastelLavender, headerBg: C.pastelLavenderBg, tagBg: "#B8A8D018", borderAccent: C.pastelLavender,
+    warmup: [
+      ["🔄 Hip circles", "10 each direction"],
+      ["🦩 Leg swings (front-to-back)", "10 each leg"],
+      ["🦋 Butterfly stretch (seated)", "30 sec"],
+      ["🐱 Cat-cow stretch", "8 reps"],
+      ["🧎 Deep lunge stretch", "20 sec each side"],
+      ["🦶 Ankle circles", "10 each direction, each foot"],
+      ["💫 Standing side bends", "10 each side"],
+      ["🚶 Minutes 0–3: Flat warm-up walk", "3.0 mph"],
+      ["📈 Minutes 3–15: Incline walk", "3.0–3.5 mph @ 5–10% incline"],
+      ["🚶 Minutes 15–20: Flat cool-down walk", "3.0 mph"],
+    ],
+    warmupLabel: "📈 Stretches + Incline Walk (25 min) — amazing for glutes! 🍑",
+    exercises: [
+      ["🐚 Banded Clamshell", "3 x 20 each side", "Lie on side, band above knees; targets glute medius"],
+      ["🌉 Glute Bridge March (band)", "3 x 10 each leg", "In bridge position, alternate lifting each foot, keep hips level"],
+      ["🪢 Band Pull-Through", "3 x 15", "Anchor band low behind you, hinge forward, drive hips through"],
+      ["🔥 Burpees (modified)", "3 x 8–10", "Step feet back instead of jumping; builds full-body strength"],
+      ["🦵 Reverse Lunge + Knee Drive", "3 x 10 each leg", "Step back into lunge, drive knee up as you stand"],
+      ["🐻 Bear Crawl", "3 x 30 sec", "Hands and feet, knees 2\" off ground; crawl forward and back"],
+      ["🫨 Dumbbell Swing (KB style)", "3 x 15", "Hip hinge to swing dumbbell to shoulder height; power from glutes"],
+      ["🕳️ Hollow Body Hold", "3 x 20–30 sec", "Arms overhead, lift shoulders + legs, press lower back to floor"],
+    ],
+    cooldown: [
+      ["🌍 World's greatest stretch", "30 sec each side"],
+      ["🐦 Pigeon pose", "30 sec each side"],
+      ["🧒 Child's pose into cobra stretch", "Repeat 3 times"],
+      ["🦋 Butterfly stretch (seated)", "30 sec"],
+      ["🧘 Seated forward fold", "30 sec — reach for your toes"],
+      ["🌀 Supine spinal twist", "30 sec each side"],
+      ["🦵 Standing quad stretch", "30 sec each leg"],
+      ["🧎 Kneeling hip flexor stretch", "30 sec each side"],
+      ["🌀 Neck rolls", "5 slow circles each direction"],
+      ["😮‍💨 Deep breathing (lying down)", "1 min — inhale 4 sec, hold 4, exhale 6"],
+    ],
+  },
+];
+
+const PROGRESSION = [
+  { emoji: "🌱", title: "Weeks 1–3: Learn the Movements", text: "Focus on form over everything. Use lighter resistance bands. It's OK if 35 lb dumbbells feel heavy — use them only where you can maintain good form. Rest 60–90 seconds between sets." },
+  { emoji: "🌿", title: "Weeks 4–6: Build Volume", text: "Add 1–2 reps per set across the board. Reduce rest to 45–60 sec. Start transitioning push-ups from knees to full. Increase treadmill incline by 1–2%." },
+  { emoji: "🌳", title: "Weeks 7–12: Progressive Overload", text: "Add a 4th set to main compound lifts. Use heavier bands. Work toward full push-ups, longer hollow holds (30+ sec), and deeper squats." },
+];
+
+const TIPS = [
+  { title: "Recovery", text: "Sleep 7–9 hours. On rest days, do light walking or stretching. Muscles grow during rest, not during the workout.", icon: "😴" },
+  { title: "Hydration", text: "Drink at least 80–100 oz of water daily — more on workout days. Stay consistent throughout the day.", icon: "💧" },
+  { title: "Track Progress", text: "Take progress photos every 2–4 weeks. The scale may not change much — photos and how clothes fit are better indicators.", icon: "📸" },
+  { title: "Consistency", text: "Show up even on days you don't feel like it. A half-effort workout beats no workout every time.", icon: "💪" },
+];
+
+const NUTRITION = {
+  dailyTargets: [
+    { label: "Protein", value: "90–110g/day", icon: "🥩", color: C.terracotta, bg: C.terracottaBg, note: "~0.7–0.85g per lb of bodyweight for muscle building" },
+    { label: "Calories", value: "~1,800–2,100", icon: "🔥", color: C.sand, bg: C.sandBg, note: "Slight surplus to support muscle growth while training" },
+    { label: "Water", value: "80–100 oz (2.5–3L)", icon: "💧", color: C.pastelMint, bg: C.pastelMintBg, note: "More on workout days; add lemon or electrolytes if you want" },
+    { label: "Carbs", value: "Don't fear them!", icon: "🍚", color: C.sage, bg: C.sageBg, note: "Carbs fuel your workouts — choose whole grains & veggies when you can" },
+  ],
+  proteinSources: [
+    { food: "Chicken breast (4 oz)", protein: "26g", cals: "130", emoji: "🍗" },
+    { food: "Eggs (2 large)", protein: "12g", cals: "140", emoji: "🥚" },
+    { food: "Greek yogurt (1 cup)", protein: "20g", cals: "130", emoji: "🥛" },
+    { food: "Black beans (1 cup)", protein: "15g", cals: "230", emoji: "🫘" },
+    { food: "Salmon (4 oz)", protein: "25g", cals: "200", emoji: "🐟" },
+    { food: "Shrimp (4 oz)", protein: "24g", cals: "100", emoji: "🦐" },
+    { food: "Lentils (1 cup)", protein: "18g", cals: "230", emoji: "🥘" },
+    { food: "Cottage cheese (1 cup)", protein: "28g", cals: "220", emoji: "🧀" },
+    { food: "Turkey ground 93% (4 oz)", protein: "22g", cals: "170", emoji: "🦃" },
+    { food: "Protein shake (1 scoop)", protein: "25g", cals: "120", emoji: "🥤" },
+  ],
+  haitianMeals: {
+    "🌅 Breakfast": [
+      { name: "🍳 Haitian Eggs & Avocado", desc: "2 eggs cooked with epis seasoning, half avocado, whole wheat bread", protein: "20g", cals: "~400" },
+      { name: "🍌 Baked Plantain & Eggs", desc: "3 eggs scrambled with bell peppers & onions. Side of baked (not fried!) plantain", protein: "22g", cals: "~380" },
+      { name: "🫘 Haitian Oatmeal (Avwan)", desc: "Oats with cinnamon, star anise, vanilla, evaporated milk (use low-fat) + peanut butter", protein: "15g", cals: "~400" },
+    ],
+    "🥗 Lunch": [
+      { name: "🍗 Poulet Griye (Grilled Chicken)", desc: "Marinated in epis & citrus, grilled not fried. Brown rice (half portion) + big side of legim", protein: "38g", cals: "~480" },
+      { name: "🐟 Poisson Griye (Grilled Fish)", desc: "Red snapper or tilapia grilled with lime & epis. Steamed plantain + pikliz on the side", protein: "35g", cals: "~420" },
+      { name: "🫘 Sos Pwa Nwa Bowl", desc: "Black bean sauce over small portion of brown rice with grilled chicken & sauteed greens. Less oil!", protein: "40g", cals: "~500" },
+      { name: "🍗 Chicken & Bannann Peze (Baked)", desc: "Grilled epis chicken thighs with baked tostones instead of fried. Pikliz on the side!", protein: "36g", cals: "~450" },
+      { name: "🍝 Aranso Spaghetti with Chicken", desc: "Haitian spaghetti with smoked herring swapped for grilled chicken. Use whole wheat pasta, less oil, add veggies", protein: "35g", cals: "~480" },
+    ],
+    "🍽️ Dinner": [
+      { name: "🍖 Tasso (Turkey Version)", desc: "Lean turkey instead of beef/goat, slow-cooked with epis, thyme, scotch bonnet. Steamed veggies + small diri", protein: "36g", cals: "~450" },
+      { name: "🦐 Krevèt (Shrimp Creole)", desc: "Shrimp sauteed with tomatoes, peppers, onions, garlic & epis. Over cauliflower rice or small white rice", protein: "32g", cals: "~380" },
+      { name: "🥘 Legim + Grilled Chicken", desc: "Loaded veggie stew (eggplant, cabbage, spinach, chayote) with grilled chicken breast. Less oil, more veggies!", protein: "35g", cals: "~420" },
+      { name: "🐟 Baked Red Snapper + Bannann", desc: "Baked (not fried!) whole fish with baked plantain slices. Side salad with lime dressing", protein: "34g", cals: "~440" },
+      { name: "🫘 Diri ak Pwa + Grilled Chicken", desc: "Half portion rice & kidney beans with grilled chicken. Fill the rest with salad or steamed broccoli", protein: "38g", cals: "~480" },
+      { name: "🍗 Poulet ak Nwa (Chicken in Cashew Sauce)", desc: "Chicken breast in light cashew sauce with epis. Serve over brown rice with steamed green beans", protein: "36g", cals: "~470" },
+      { name: "🍝 Haitian Macaroni au Gratin (Light)", desc: "Use whole wheat macaroni, low-fat cheese, add shredded chicken for protein. Half the butter!", protein: "30g", cals: "~450" },
+      { name: "🍗 Epis Chicken Stir-Fry", desc: "Chicken breast stir-fried with epis, bell peppers, onions, broccoli. Small side of white rice", protein: "38g", cals: "~420" },
+    ],
+    "🍌 Snacks": [
+      { name: "🥜 Peanut Butter & Banana", desc: "1 banana + 2 tbsp natural peanut butter — Haitian comfort!", protein: "8g", cals: "~280" },
+      { name: "🍌 Baked Plantain Chips", desc: "Thinly sliced plantain baked with a little salt and lime", protein: "2g", cals: "~150" },
+      { name: "🥜 Haitian Tablet (Peanut Brittle)", desc: "Small portion — it's mostly peanuts and sugar, so keep it to a couple pieces", protein: "6g", cals: "~180" },
+      { name: "🥭 Fresh Mango with Lime & Salt", desc: "Classic Haitian street snack — naturally sweet and refreshing!", protein: "1g", cals: "~100" },
+    ],
+  },
+  regularMeals: {
+    "🌅 Breakfast": [
+      { name: "🥞 Protein Oat Bowl", desc: "Oats + protein powder + banana + peanut butter + honey drizzle", protein: "35g", cals: "~450" },
+      { name: "🥚 Egg & Veggie Scramble", desc: "3 eggs scrambled with bell peppers, onions, spinach, and feta cheese", protein: "24g", cals: "~350" },
+      { name: "🥑 Avocado Toast + Eggs", desc: "Whole wheat toast, smashed avocado, 2 fried eggs, everything seasoning", protein: "20g", cals: "~420" },
+      { name: "🥤 Protein Smoothie Bowl", desc: "Protein powder, frozen berries, banana, almond milk, topped with granola & chia seeds", protein: "30g", cals: "~400" },
+    ],
+    "🥗 Lunch": [
+      { name: "🥗 Grilled Chicken Salad", desc: "Mixed greens, grilled chicken breast, avocado, tomato, cucumber, black beans, lime dressing", protein: "35g", cals: "~420" },
+      { name: "🌯 Chicken & Veggie Wrap", desc: "Whole wheat wrap with grilled chicken, hummus, spinach, cucumber, shredded carrots", protein: "32g", cals: "~400" },
+      { name: "🍗 Chicken Quesadilla (Healthy)", desc: "Whole wheat tortilla, grilled chicken, low-fat cheese, peppers, onions. Use cooking spray instead of butter", protein: "35g", cals: "~440" },
+      { name: "🥙 Mediterranean Chicken Bowl", desc: "Grilled chicken, quinoa, cucumber, tomato, red onion, feta, olive oil & lemon dressing", protein: "38g", cals: "~480" },
+      { name: "🍝 Chicken Pesto Pasta", desc: "Whole wheat penne with grilled chicken, light pesto, cherry tomatoes, spinach", protein: "36g", cals: "~500" },
+    ],
+    "🍽️ Dinner": [
+      { name: "🍝 Chicken Alfredo (Light)", desc: "Whole wheat fettuccine, grilled chicken, light alfredo (Greek yogurt base), broccoli & garlic", protein: "40g", cals: "~480" },
+      { name: "🍗 Lemon Herb Chicken + Veggies", desc: "Baked chicken breast with lemon, garlic, thyme. Roasted sweet potato and steamed asparagus", protein: "38g", cals: "~430" },
+      { name: "🍝 Chicken Spaghetti (Classic)", desc: "Whole wheat spaghetti with lean ground chicken in marinara sauce. Add mushrooms and zucchini", protein: "35g", cals: "~460" },
+      { name: "🌮 Chicken Tacos", desc: "Seasoned grilled chicken in corn tortillas with lettuce, pico de gallo, Greek yogurt (instead of sour cream)", protein: "34g", cals: "~400" },
+      { name: "🍛 Chicken Stir-Fry", desc: "Chicken breast with broccoli, snap peas, bell peppers, garlic, low-sodium soy sauce over brown rice", protein: "38g", cals: "~450" },
+      { name: "🍗 Honey Garlic Chicken", desc: "Baked chicken thighs glazed with honey, garlic, and soy. Serve with jasmine rice and steamed bok choy", protein: "36g", cals: "~470" },
+      { name: "🍕 Chicken Flatbread Pizza", desc: "Whole wheat naan, marinara, mozzarella, grilled chicken, spinach, red onion", protein: "32g", cals: "~420" },
+      { name: "🥘 One-Pot Chicken & Rice", desc: "Chicken breast, brown rice, diced tomatoes, onion, garlic, chicken broth — easy and filling!", protein: "36g", cals: "~450" },
+      { name: "🍝 Garlic Butter Chicken Pasta", desc: "Whole wheat pasta with sauteed chicken, garlic, butter (1 tbsp), parmesan, spinach, lemon", protein: "38g", cals: "~490" },
+      { name: "🥗 Grilled Chicken & Sweet Potato", desc: "Seasoned chicken breast with baked sweet potato and a big side salad", protein: "35g", cals: "~420" },
+    ],
+    "🍌 Snacks": [
+      { name: "🥛 Greek Yogurt & Mango", desc: "1 cup Greek yogurt with fresh mango chunks + sprinkle of granola", protein: "22g", cals: "~250" },
+      { name: "🥚 Hard-Boiled Eggs", desc: "2 hard-boiled eggs with salt and hot sauce", protein: "12g", cals: "~140" },
+      { name: "🥤 Post-Workout Shake", desc: "Protein powder + banana + peanut butter + almond milk", protein: "30g", cals: "~350" },
+      { name: "🍎 Apple + Peanut Butter", desc: "1 apple sliced with 2 tbsp peanut butter", protein: "7g", cals: "~270" },
+      { name: "🧀 String Cheese + Turkey Roll-Ups", desc: "2 string cheese sticks wrapped in deli turkey slices", protein: "20g", cals: "~180" },
+    ],
+  },
+  haitianTips: [
+    "🌿 Use epis as your base seasoning — it's naturally healthy and packed with flavor",
+    "🍌 Baked or boiled plantains over fried — same taste, way fewer calories",
+    "🍚 Don't cut rice out! Use a smaller portion and fill the rest with veggies + protein",
+    "🥬 Bulk up traditional dishes with extra vegetables — spinach in sos pwa, extra veggies in legim",
+    "🫒 Use less oil — 1 tablespoon of olive oil instead of pouring freely saves 100+ calories",
+    "🌶️ Pikliz is your best friend — low cal, amazing flavor, and vinegar helps digestion!",
+    "🐟 Griye (grill) over fri (fry) — every time for your goals!",
+  ],
+};
+
+// ── COMPONENTS ──────────────────────────────────────────
+
+function Checkbox({ checked, onChange, accentColor }) {
+  return (
+    <div onclick={onChange} style={{
+      width: 20, height: 20, minWidth: 20, borderRadius: 5,
+      border: checked ? "none" : `2px solid ${C.cardBorder}`,
+      background: checked ? (accentColor || C.sage) : "transparent",
+      display: "flex", alignItems: "center", justifyContent: "center",
+      cursor: "pointer", transition: "all 0.15s",
+    }}>
+      {checked && <span style="color: white; font-size: 0.7rem; font-weight: 700">✓</span>}
+    </div>
+  );
+}
+
+function ExerciseTable({ exercises, accentColor, checkedState, onToggle, idPrefix }) {
+  return (
+    <div>
+      {exercises.map(([name, sets, notes], i) => {
+        const key = `${idPrefix}-${i}`;
+        const done = checkedState[key] || false;
+        return (
+          <div key={i} style={{
+            display: "flex", alignItems: "flex-start", gap: "0.6rem",
+            padding: "0.55rem 0.4rem",
+            borderBottom: `1px solid ${C.cardBorder}33`,
+            opacity: done ? 0.5 : 1,
+            transition: "opacity 0.2s",
+            background: i % 2 === 0 ? "transparent" : `${C.cream}66`,
+            borderRadius: 4,
+          }}>
+            <div style="padding-top: 2">
+              <Checkbox checked={done} onchange={() => onToggle(key)} accentColor={accentColor} />
+            </div>
+            <div style="flex: 1">
+              <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.25rem">
+                <span style="font-weight: 500; color: C.textDark; font-size: 0.85rem; text-decoration: done ? "line-through" : "none">{name}</span>
+                <span style="color: accentColor || C.sage; font-weight: 700; font-size: 0.8rem; white-space: nowrap">{sets}</span>
+              </div>
+              <div style="color: C.textMuted; font-style: italic; font-size: 0.78rem; margin-top: 0.15rem">{notes}</div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function SimpleChecklist({ rows, checkedState, onToggle, idPrefix, accentColor }) {
+  return (
+    <div>
+      {rows.map(([a, b], i) => {
+        const key = `${idPrefix}-${i}`;
+        const done = checkedState[key] || false;
+        return (
+          <div key={i} style={{
+            display: "flex", alignItems: "center", gap: "0.6rem",
+            padding: "0.4rem 0.4rem",
+            borderBottom: `1px solid ${C.cardBorder}22`,
+            opacity: done ? 0.5 : 1,
+          }}>
+            <Checkbox checked={done} onchange={() => onToggle(key)} accentColor={accentColor} />
+            <span style="font-weight: 500; color: C.textDark; font-size: 0.85rem; flex: 1; text-decoration: done ? "line-through" : "none">{a}</span>
+            <span style="color: C.textMuted; font-size: 0.82rem">{b}</span>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function CollapsibleSection({ title, emoji, color, bg, defaultOpen, count, doneCount, children }) {
+  const [open, setOpen] = useState(defaultOpen !== undefined ? defaultOpen : true);
+  const hasCounts = count !== undefined;
+  const allDone = hasCounts && doneCount === count;
+  return (
+    <div style={{ background: bg || C.cardBg, border: `1px solid ${C.cardBorder}`, borderRadius: 12, marginBottom: "0.6rem", overflow: "hidden" }}>
+      <div onclick={() => setOpen(!open)} style="padding: 0.65rem 1rem; display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none">
+        <div style="display: flex; align-items: center; gap: 0.5rem">
+          <span style="font-size: 1.1rem; transition: transform 0.2s; transform: open ? "rotate(90deg)" : "rotate(0); color: color || C.olive">▶</span>
+          <span style="font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: color || C.olive">{emoji} {title}</span>
+        </div>
+        {hasCounts && (
+          <span style={{ fontSize: "0.7rem", fontWeight: 700, padding: "0.15rem 0.55rem", borderRadius: 999, background: allDone ? C.sage : `${color}22`, color: allDone ? "white" : (color || C.textMuted) }}>
+            {allDone ? "✅" : `${doneCount}/${count}`}
+          </span>
+        )}
+      </div>
+      {open && <div style="padding: 0 1rem 0.75rem">{children}</div>}
+    </div>
+  );
+}
+
+function DayCard({ day, checkedState, onToggle }) {
+  // Count completed per section
+  const countDone = (prefix, arr) => arr.filter((_, i) => checkedState[`${prefix}-${i}`]).length;
+  const warmupDone = countDone(`d${day.id}-warmup`, day.warmup);
+  const workoutDone = countDone(`d${day.id}-workout`, day.exercises);
+  const extraDone = day.extraSection ? countDone(`d${day.id}-extra`, day.extraSection.exercises) : 0;
+  const cooldownDone = countDone(`d${day.id}-cooldown`, day.cooldown);
+  const totalExercises = day.exercises.length + (day.extraSection ? day.extraSection.exercises.length : 0);
+  const totalDoneExercises = workoutDone + extraDone;
+
+  const allKeys = [];
+  day.warmup.forEach((_, i) => allKeys.push(`d${day.id}-warmup-${i}`));
+  day.exercises.forEach((_, i) => allKeys.push(`d${day.id}-workout-${i}`));
+  if (day.extraSection) day.extraSection.exercises.forEach((_, i) => allKeys.push(`d${day.id}-extra-${i}`));
+  day.cooldown.forEach((_, i) => allKeys.push(`d${day.id}-cooldown-${i}`));
+  const total = allKeys.length;
+  const done = allKeys.filter(k => checkedState[k]).length;
+  const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+
+  return (
+    <div style={{ background: C.cardBg, border: `1px solid ${C.cardBorder}`, borderRadius: 14, marginBottom: "1.25rem", overflow: "hidden", boxShadow: "0 1px 4px #0001" }}>
+      <!-- Day header -->
+      <div style={{
+        background: day.headerBg, padding: "0.9rem 1.25rem",
+        fontWeight: 700, fontSize: "1.02rem",
+        display: "flex", justifyContent: "space-between", alignItems: "center",
+        color: C.textDark, flexWrap: "wrap", gap: "0.5rem",
+        borderBottom: `2px solid ${day.borderAccent}44`,
+      }}>
+        <span>{day.emoji} {day.title}</span>
+        <div style="display: flex; align-items: center; gap: 0.6rem">
+          <span style={{ fontSize: "0.72rem", fontWeight: 700, padding: "0.2rem 0.6rem", borderRadius: 999, background: pct === 100 ? C.sage : `${day.borderAccent}22`, color: pct === 100 ? "white" : day.color }}>
+            {pct === 100 ? "✅ All Done!" : `${done}/${total}`}
+          </span>
+          <span style={{ fontSize: "0.7rem", fontWeight: 600, padding: "0.2rem 0.6rem", borderRadius: 999, background: day.tagBg, color: day.color, textTransform: "uppercase", letterSpacing: "0.5px", border: `1px solid ${day.color}33` }}>{day.tag}</span>
+        </div>
+      </div>
+
+      <!-- Progress bar -->
+      <div style="height: 4; background: C.cream; overflow: hidden">
+        <div style={{ height: "100%", width: `${pct}%`, background: `linear-gradient(90deg, ${day.color}, ${C.sage})`, transition: "width 0.3s" }} />
+      </div>
+
+      <div style="padding: 0.75rem 0.75rem 0.5rem">
+        <!-- WARM-UP — collapsible -->
+        <CollapsibleSection
+          title={day.warmupLabel || "Warm-Up (5–10 min)"}
+          emoji="🔥"
+          color={C.terracotta}
+          bg={C.terracottaBg + "66"}
+          defaultOpen={false}
+          count={day.warmup.length}
+          doneCount={warmupDone}
+        >
+          <SimpleChecklist rows={day.warmup} checkedState={checkedState} onToggle={onToggle} idPrefix={`d${day.id}-warmup`} accentColor={day.color} />
+        </CollapsibleSection>
+
+        <!-- WORKOUT — collapsible, open by default -->
+        <CollapsibleSection
+          title="Workout"
+          emoji="💪"
+          color={day.color}
+          bg={day.headerBg + "88"}
+          defaultOpen={true}
+          count={totalExercises}
+          doneCount={totalDoneExercises}
+        >
+          <ExerciseTable exercises={day.exercises} accentColor={day.color} checkedState={checkedState} onToggle={onToggle} idPrefix={`d${day.id}-workout`} />
+          {day.extraSection && (
+            <>
+              <p style="font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.6px; color: C.olive; margin: 0.75rem 0 0.4rem">{day.extraSection.label}</p>
+              <ExerciseTable exercises={day.extraSection.exercises} accentColor={day.color} checkedState={checkedState} onToggle={onToggle} idPrefix={`d${day.id}-extra`} />
+            </>
+          )}
+        </CollapsibleSection>
+
+        <!-- COOL-DOWN — collapsible -->
+        <CollapsibleSection
+          title="Cool-Down (5–8 min)"
+          emoji="🧘"
+          color={C.pastelMint}
+          bg={C.pastelMintBg + "88"}
+          defaultOpen={false}
+          count={day.cooldown.length}
+          doneCount={cooldownDone}
+        >
+          <SimpleChecklist rows={day.cooldown} checkedState={checkedState} onToggle={onToggle} idPrefix={`d${day.id}-cooldown`} accentColor={day.color} />
+        </CollapsibleSection>
+      </div>
+    </div>
+  );
+}
+
+function MealCard({ meal }) {
+  return (
+    <div style={{ background: C.cardBg, border: `1px solid ${C.cardBorder}`, borderRadius: 10, padding: "0.85rem 1rem", marginBottom: "0.5rem", boxShadow: "0 1px 2px #0001" }}>
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.25rem">
+        <span style="font-weight: 600; color: C.textDark; font-size: 0.9rem">{meal.name}</span>
+        <div style="display: flex; gap: 0.5rem">
+          <span style="font-size: 0.72rem; font-weight: 700; padding: 0.15rem 0.5rem; border-radius: 999; background: C.terracottaBg; color: C.terracotta">{meal.protein} protein</span>
+          <span style="font-size: 0.72rem; font-weight: 700; padding: 0.15rem 0.5rem; border-radius: 999; background: C.sandBg; color: C.sand">{meal.cals} cal</span>
+        </div>
+      </div>
+      <p style="font-size: 0.82rem; color: C.textMuted; margin-top: 0.3rem; line-height: 1.45">{meal.desc}</p>
+    </div>
+  );
+}
+
+// ── MAIN APP ────────────────────────────────────────────
+
+export default function WorkoutPlan() {
+  const [activeTab, setActiveTab] = useState("plan");
+  const [checked, setChecked] = useState({});
+  const [mealTab, setMealTab] = useState("🥗 Lunch");
+  const [activeDay, setActiveDay] = useState(1);
+  const [mealStyle, setMealStyle] = useState("haitian");
+
+  const toggle = (key) => setChecked(prev => ({ ...prev, [key]: !prev[key] }));
+  const resetAll = () => setChecked({});
+
+  const tabItems = [
+    ["plan", "🌿 Workouts"],
+    ["nutrition", "🍽️ Nutrition"],
+    ["progress", "🌱 Progression"],
+    ["tips", "✨ Tips"],
+  ];
+
+  return (
+    <div style="font-family: -apple-system; background: C.bg; color: C.textDark; min-height: 100vh; padding: 1.5rem 1rem">
+      <div style="max-width: 860; margin: 0 auto">
+
+        <!-- Title -->
+        <h1 style={{ fontSize: "1.85rem", fontWeight: 700, textAlign: "center", marginBottom: "0.2rem", background: `linear-gradient(135deg, ${C.sage}, ${C.sand}, ${C.terracotta})`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>🌿 Your Workout Routine 🌿</h1>
+        <p style="text-align: center; color: C.textMuted; font-size: 0.9rem; margin-bottom: 1.5rem">✨ Beginner Calisthenics & Strength — 3–4 Days/Week, At Home ✨</p>
+
+        <!-- Profile -->
+        <div style={{ background: C.cardBg, border: `1px solid ${C.cardBorder}`, borderRadius: 14, padding: "1.1rem 1.25rem", display: "flex", flexWrap: "wrap", gap: "1.25rem", marginBottom: "1.5rem", fontSize: "0.88rem", boxShadow: "0 1px 4px #0001" }}>
+          {[["📏 Height", "5'6\""], ["⚖️ Weight", "~130 lbs"], ["🌱 Level", "Beginner"], ["🏠 Equipment", "Treadmill, 35 lb dumbbells, bands & ropes"], ["🎯 Goals", "Build muscle, tone up, grow glutes, flatten core"]].map(([k, v]) => (
+            <div key={k}><span style="color: C.sage; font-weight: 600">{k}:</span> <span style="color: C.textDark">{v}</span></div>
+          ))}
+        </div>
+
+        <!-- Tabs -->
+        <div style="display: flex; gap: 0.4rem; margin-bottom: 1.5rem; flex-wrap: wrap">
+          {tabItems.map(([id, label]) => (
+            <button key={id} onclick={() => setActiveTab(id)} style={{
+              flex: 1, minWidth: 100, padding: "0.65rem 0.5rem", borderRadius: 10,
+              border: activeTab === id ? `2px solid ${C.sage}` : `1px solid ${C.cardBorder}`,
+              background: activeTab === id ? C.sageBg : C.cardBg,
+              color: activeTab === id ? C.sageDark : C.textMuted,
+              fontWeight: 600, fontSize: "0.83rem", cursor: "pointer",
+              transition: "all 0.2s", boxShadow: activeTab === id ? `0 2px 8px ${C.sage}22` : "none",
+            }}>{label}</button>
+          ))}
+        </div>
+
+        <!-- ═══ PLAN TAB ═══ -->
+        {activeTab === "plan" && (
+          <>
+            <!-- Step Goal Card -->
+            <div style={{ background: C.pastelMintBg, border: `1px solid ${C.pastelMint}55`, borderRadius: 14, padding: "1rem 1.25rem", marginBottom: "1.25rem", boxShadow: "0 1px 4px #0001" }}>
+              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem">
+                <div>
+                  <p style="font-weight: 700; color: C.sage; font-size: 0.95rem">👟 Daily Step Goal</p>
+                  <p style="font-size: 0.8rem; color: C.textMuted; margin-top: 0.2rem">Walk every single day — even rest days!</p>
+                </div>
+                <div style="font-size: 1.5rem; font-weight: 700; color: C.sageDark">🚶‍♀️</div>
+              </div>
+              <div style="display: grid; grid-template-columns: repeat(auto-fit; gap: 0.5rem; margin-top: 0.75rem">
+                {[
+                  { week: "Weeks 1–2", steps: "6,000–8,000", emoji: "🌱" },
+                  { week: "Weeks 3–4", steps: "8,000–9,000", emoji: "🌿" },
+                  { week: "Weeks 5–6", steps: "9,000–10,000", emoji: "🌳" },
+                  { week: "Week 7+", steps: "10,000+ 🎉", emoji: "🏆" },
+                ].map(({ week, steps, emoji }, i) => (
+                  <div key={i} style={{ background: C.cardBg, border: `1px solid ${C.cardBorder}`, borderRadius: 10, padding: "0.6rem 0.75rem", textAlign: "center" }}>
+                    <div style="font-size: 0.68rem; color: C.textDim; font-weight: 600; text-transform: uppercase">{week}</div>
+                    <div style="font-size: 0.9rem; font-weight: 700; color: C.sage; margin-top: 0.15rem">{emoji} {steps}</div>
+                  </div>
+                ))}
+              </div>
+              <p style="font-size: 0.75rem; color: C.textMuted; margin-top: 0.6rem; font-style: italic">💡 Use your treadmill warm-ups and cool-downs to help hit your step count. A 20-min walk = ~2,000 steps!</p>
+            </div>
+
+            <!-- Weekly Schedule -->
+            <div style={{ background: C.cardBg, border: `1px solid ${C.cardBorder}`, borderRadius: 14, padding: "1rem 1.25rem", marginBottom: "1.25rem", boxShadow: "0 1px 4px #0001" }}>
+              <p style="font-weight: 700; margin-bottom: 0.75rem; font-size: 0.95rem; color: C.textDark">📅 Weekly Schedule</p>
+              <div style="display: grid; grid-template-columns: repeat(auto-fit; gap: 0.5rem">
+                {[
+                  { day: "Mon", label: "🍑 Lower Body & Glutes", color: C.sage, bg: C.sageBg },
+                  { day: "Tue", label: "😴 Rest", color: C.textDim, bg: C.cream },
+                  { day: "Wed", label: "💪 Upper Body & Core", color: C.sand, bg: C.sandBg },
+                  { day: "Thu", label: "😴 Rest", color: C.textDim, bg: C.cream },
+                  { day: "Fri", label: "🔥 Full Body + Cardio", color: C.terracotta, bg: C.terracottaBg },
+                  { day: "Sat", label: "🌟 Glutes & Calisthenics", color: C.pastelLavender, bg: C.pastelLavenderBg },
+                  { day: "Sun", label: "😴 Rest", color: C.textDim, bg: C.cream },
+                ].map(({ day, label, color, bg }) => (
+                  <div key={day} style={{ background: bg, border: `1px solid ${C.cardBorder}`, borderRadius: 10, padding: "0.6rem 0.5rem", textAlign: "center" }}>
+                    <div style="font-size: 0.68rem; text-transform: uppercase; color: C.textDim; letter-spacing: 0.5px; margin-bottom: 0.3rem; font-weight: 600">{day}</div>
+                    <div style="font-size: 0.72rem; font-weight: 600; line-height: 1.3">{label}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <!-- Day Sub-Tabs -->
+            <div style="display: flex; gap: 0.35rem; margin-bottom: 1rem; flex-wrap: wrap">
+              {DAYS.map((day) => {
+                const active = activeDay === day.id;
+                return (
+                  <button key={day.id} onclick={() => setActiveDay(day.id)} style={{
+                    flex: 1, minWidth: 80, padding: "0.55rem 0.4rem", borderRadius: 10,
+                    border: active ? `2px solid ${day.borderAccent}` : `1px solid ${C.cardBorder}`,
+                    background: active ? day.headerBg : C.cardBg,
+                    color: active ? day.color : C.textMuted,
+                    fontWeight: 600, fontSize: "0.78rem", cursor: "pointer",
+                    transition: "all 0.15s",
+                  }}>{day.emoji} Day {day.id}</button>
+                );
+              })}
+            </div>
+
+            <!-- Reset button -->
+            <div style="display: flex; justify-content: flex-end; margin-bottom: 0.75rem">
+              <button onclick={resetAll} style={{ padding: "0.4rem 0.9rem", borderRadius: 8, border: `1px solid ${C.cardBorder}`, background: C.cardBg, color: C.textMuted, fontSize: "0.78rem", cursor: "pointer", fontWeight: 500 }}>🔄 Reset Checkboxes</button>
+            </div>
+
+            <!-- Show only active day -->
+            {DAYS.filter(d => d.id === activeDay).map((day) => (
+              <DayCard key={day.id} day={day} checkedState={checked} onToggle={toggle} />
+            ))}
+
+            <!-- Knee Callout -->
+            <div style={{ background: C.sageBg, borderLeft: `4px solid ${C.sage}`, borderRadius: "0 12px 12px 0", padding: "1rem 1.25rem", marginTop: "0.5rem" }}>
+              <p style="color: C.sageDark; font-weight: 700; margin-bottom: 0.35rem">🦵 Knee-Friendly Modifications</p>
+              <p style="font-size: 0.85rem; color: C.textMuted; line-height: 1.6">Swap lunges for reverse lunges or step-ups. Swap jump squats for regular squats or wall sits. Keep knees tracking over toes. Incline treadmill walking is much easier on knees than running. Stop and consult a doctor if you have persistent pain. 💚</p>
+            </div>
+          </>
+        )}
+
+        <!-- ═══ NUTRITION TAB ═══ -->
+        {activeTab === "nutrition" && (
+          <div>
+            <!-- Daily Targets -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit; gap: 0.75rem; margin-bottom: 1.5rem">
+              {NUTRITION.dailyTargets.map(({ label, value, icon, color, bg, note }, i) => (
+                <div key={i} style={{ background: bg, border: `1px solid ${C.cardBorder}`, borderRadius: 12, padding: "1rem", textAlign: "center" }}>
+                  <div style="font-size: 1.5rem; margin-bottom: 0.3rem">{icon}</div>
+                  <div style="font-weight: 700; font-size: 1.1rem">{value}</div>
+                  <div style="font-weight: 600; color: C.textDark; font-size: 0.85rem; margin-top: 0.1rem">{label}</div>
+                  <div style="font-size: 0.75rem; color: C.textMuted; margin-top: 0.3rem">{note}</div>
+                </div>
+              ))}
+            </div>
+
+            <!-- Protein Sources -->
+            <div style={{ background: C.cardBg, border: `1px solid ${C.cardBorder}`, borderRadius: 14, padding: "1rem 1.25rem", marginBottom: "1.5rem", boxShadow: "0 1px 4px #0001" }}>
+              <p style="font-weight: 700; margin-bottom: 0.6rem; color: C.textDark">🥩 Quick Protein Reference</p>
+              <div style="display: grid; grid-template-columns: repeat(auto-fit; gap: 0.4rem">
+                {NUTRITION.proteinSources.map(({ food, protein, cals, emoji }, i) => (
+                  <div key={i} style="display: flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0.5rem; background: i % 2 === 0 ? C.cream : "transparent; border-radius: 6">
+                    <span>{emoji}</span>
+                    <span style="flex: 1; font-size: 0.82rem; color: C.textDark">{food}</span>
+                    <span style="font-size: 0.75rem; font-weight: 700; color: C.terracotta">{protein}</span>
+                    <span style="font-size: 0.72rem; color: C.textMuted">{cals} cal</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <!-- Meal Style Toggle -->
+            <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem">
+              {[["haitian", "🇭🇹 Haitian Meals"], ["regular", "🍝 Other Meals"]].map(([id, label]) => (
+                <button key={id} onclick={() => { setMealStyle(id); setMealTab("🥗 Lunch"); }} style={{
+                  flex: 1, padding: "0.7rem", borderRadius: 10,
+                  border: mealStyle === id ? `2px solid ${id === "haitian" ? C.terracotta : C.sage}` : `1px solid ${C.cardBorder}`,
+                  background: mealStyle === id ? (id === "haitian" ? C.terracottaBg : C.sageBg) : C.cardBg,
+                  color: mealStyle === id ? (id === "haitian" ? C.terracotta : C.sageDark) : C.textMuted,
+                  fontWeight: 700, fontSize: "0.9rem", cursor: "pointer",
+                }}>{label}</button>
+              ))}
+            </div>
+
+            <!-- Meal category tabs -->
+            {(() => {
+              const mealsObj = mealStyle === "haitian" ? NUTRITION.haitianMeals : NUTRITION.regularMeals;
+              const cats = Object.keys(mealsObj);
+              const currentCat = cats.includes(mealTab) ? mealTab : cats[0];
+              return (
+                <>
+                  <div style="display: flex; gap: 0.35rem; margin-bottom: 1rem; flex-wrap: wrap">
+                    {cats.map((cat) => (
+                      <button key={cat} onclick={() => setMealTab(cat)} style={{
+                        padding: "0.45rem 0.75rem", borderRadius: 8,
+                        border: currentCat === cat ? `2px solid ${mealStyle === "haitian" ? C.terracotta : C.sage}` : `1px solid ${C.cardBorder}`,
+                        background: currentCat === cat ? (mealStyle === "haitian" ? C.terracottaBg : C.sageBg) : C.cardBg,
+                        color: currentCat === cat ? (mealStyle === "haitian" ? C.terracotta : C.sageDark) : C.textMuted,
+                        fontWeight: 600, fontSize: "0.8rem", cursor: "pointer",
+                      }}>{cat}</button>
+                    ))}
+                  </div>
+                  {mealsObj[currentCat]?.map((meal, i) => <MealCard key={i} meal={meal} />)}
+                </>
+              );
+            })()}
+
+            <!-- Haitian Cooking Tips — show only on Haitian tab -->
+            {mealStyle === "haitian" && (
+              <div style={{ background: C.sageBg, border: `1px solid ${C.sage}44`, borderRadius: 14, padding: "1.1rem 1.25rem", marginTop: "1.25rem" }}>
+                <p style="font-weight: 700; color: C.sageDark; margin-bottom: 0.6rem; font-size: 0.95rem">🌿 Haitian Cooking Tips for Healthier Meals</p>
+                {NUTRITION.haitianTips.map((tip, i) => (
+                  <p key={i} style="font-size: 0.84rem; color: C.textMuted; margin-bottom: 0.4rem; line-height: 1.5">{tip}</p>
+                ))}
+              </div>
+            )}
+
+            <!-- General tips — show on regular tab -->
+            {mealStyle === "regular" && (
+              <div style={{ background: C.sandBg, border: `1px solid ${C.sand}44`, borderRadius: 14, padding: "1.1rem 1.25rem", marginTop: "1.25rem" }}>
+                <p style="font-weight: 700; color: C.sand; margin-bottom: 0.6rem; font-size: 0.95rem">🍗 Chicken Cooking Tips</p>
+                {[
+                  "🍗 Buy chicken breast in bulk and meal prep — season and grill 4–5 breasts on Sunday for the whole week",
+                  "🌡️ Bake at 400°F for 20–25 min for juicy chicken breast every time. Don't overcook!",
+                  "🧂 Marinate for at least 30 min — even just olive oil, garlic, lemon, salt & pepper makes a huge difference",
+                  "🥘 Use an air fryer for crispy chicken without the oil — game changer for healthy eating",
+                  "🍋 Add acid (lemon, lime, vinegar) to marinades — it tenderizes the chicken and adds zero calories",
+                  "🥗 Shred leftover chicken and throw it on salads, wraps, pasta, or rice bowls all week long",
+                ].map((tip, i) => (
+                  <p key={i} style="font-size: 0.84rem; color: C.textMuted; margin-bottom: 0.4rem; line-height: 1.5">{tip}</p>
+                ))}
+              </div>
+            )}
+
+            <!-- Water tracker -->
+            <div style={{ background: C.pastelMintBg, border: `1px solid ${C.pastelMint}44`, borderRadius: 14, padding: "1.1rem 1.25rem", marginTop: "1rem" }}>
+              <p style="font-weight: 700; color: C.sage; margin-bottom: 0.4rem">💧 Daily Water Goal: 80–100 oz</p>
+              <p style="font-size: 0.84rem; color: C.textMuted; line-height: 1.5">That's about 5–6 regular water bottles throughout the day. On workout days, aim for the higher end. Try keeping a bottle with you at all times and sipping consistently rather than chugging all at once! Add lemon, cucumber, or mint to make it more fun 🍋</p>
+            </div>
+          </div>
+        )}
+
+        <!-- ═══ PROGRESSION TAB ═══ -->
+        {activeTab === "progress" && (
+          <div>
+            {PROGRESSION.map(({ emoji, title, text }, i) => (
+              <div key={i} style={{ background: C.cardBg, border: `1px solid ${C.cardBorder}`, borderRadius: 14, padding: "1.25rem 1.5rem", marginBottom: "0.75rem", boxShadow: "0 1px 4px #0001" }}>
+                <p style="color: C.sand; font-weight: 700; margin-bottom: 0.4rem; font-size: 1rem">{emoji} {title}</p>
+                <p style="font-size: 0.88rem; color: C.textMuted; line-height: 1.6">{text}</p>
+              </div>
+            ))}
+            <div style={{ background: C.sageBg, border: `1.5px solid ${C.sage}55`, borderRadius: 14, padding: "1.25rem 1.5rem", marginTop: "1rem" }}>
+              <p style="color: C.sageDark; font-weight: 700; margin-bottom: 0.5rem; font-size: 1rem">🔑 The Key: Progressive Overload</p>
+              <p style="font-size: 0.88rem; color: C.textMuted; line-height: 1.6">Every 2–3 weeks, make things a little harder — add 1–2 reps, add a set, shorten rest time, or increase weight. Your body adapts, so you have to keep challenging it! 🌱➡️🌳</p>
+            </div>
+          </div>
+        )}
+
+        <!-- ═══ TIPS TAB ═══ -->
+        {activeTab === "tips" && (
+          <div style="display: grid; grid-template-columns: repeat(auto-fit; gap: 1rem">
+            {TIPS.map(({ title, text, icon }, i) => {
+              const colors = [C.sage, C.pastelMint, C.sand, C.terracotta];
+              const bgs = [C.sageBg, C.pastelMintBg, C.sandBg, C.terracottaBg];
+              return (
+                <div key={i} style={{ background: bgs[i], border: `1px solid ${C.cardBorder}`, borderRadius: 12, padding: "1.1rem 1.25rem" }}>
+                  <p style="font-size: 1rem; margin-bottom: 0.4rem; color: colors[i]; font-weight: 700">{icon} {title}</p>
+                  <p style="font-size: 0.85rem; color: C.textMuted; line-height: 1.55">{text}</p>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        <!-- Footer -->
+        <div style={{ textAlign: "center", color: C.textDim, fontSize: "0.8rem", marginTop: "2.5rem", paddingTop: "1.25rem", borderTop: `1px solid ${C.cardBorder}` }}>
+          <p>🌿 Built for Monarq — May 2026 🌿</p>
+          <p style="margin-top: 0.25rem">Consistency beats intensity every time. You've got this! 💪🍑✨</p>
+        </div>
+      </div>
+    </div>
+  );
+}
