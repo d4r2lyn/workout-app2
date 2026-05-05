@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Workout Plan</title>
+
+  <!-- React CDN -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+
+<body style="margin:0;">
+  <div id="root"></div>
+
+  <script type="text/babel">
+
+const { useState } = React;
+
+// (PASTE YOUR ENTIRE CODE HERE — EXACTLY AS YOU SENT IT)
+
+// 👇 IMPORTANT: replace "export default function WorkoutPlan()" with:
+function WorkoutPlan() {
+  const [activeTab, setActiveTab] = useState("plan");
+  const [checked, setChecked] = useState({});
+  const [mealTab, setMealTab] = useState("🥗 Lunch");
+  const [activeDay, setActiveDay] = useState(1);
+  const [mealStyle, setMealStyle] = useState("haitian");
+
+  const toggle = (key) => setChecked(prev => ({ ...prev, [key]: !prev[key] }));
+  const resetAll = () => setChecked({});
+
+  // KEEP THE REST OF YOUR COMPONENT EXACTLY THE SAME
+}
+
+// 👇 render the app
+ReactDOM.createRoot(document.getElementById("root")).render(<WorkoutPlan />);
+
+  </script>
+</body>
+</html>
